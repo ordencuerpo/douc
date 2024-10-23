@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOUC</title>
+    <style>
+        :root {
+            --primary-color: #0088cc;
+            --hover-color: #006699;
+            --background-color: #f5f5f5;
+            --border-color: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #e9ecef;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ORDEN DE CUERPO</h1>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Buscar documento..." id="searchInput">
+        </div>
+
+        <table id="documentsTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Año</th>
+                    <th onclick="sortTable(1)">Tipo</th>
+                    <th onclick="sortTable(2)">Nro</th>
+                    <th onclick="sortTable(3)">Fecha</th>
+                    <th onclick="sortTable(4)">Descripción</th>
+                    <th>Archivo</th>
+                </tr>
+            </thead>
+            <tbody id="documentsBody">
+                <!-- Data will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Sample data structure - Aquí es donde agregarás tus documentos con los links de Google Drive
+        let documents = [
+            {
+                year: '2024',
+                type: 'Orden de Cuerpo',
+                number: '201',
+                date: '23/10/2024',
+                description: 'Orden Nro. 201',
+                driveLink: 'https://drive.google.com/file/d/TU_ID_DE_ARCHIVO/view?usp=sharing'
+            },
+            {
+                year: '2024',
+                type: 'Orden de Cuerpo',
+                number: '200',
+                date: '22/10/2024',
+                description: 'Orden Nro. 200',
+                driveLink: 'https://drive.google.com/file/d/1c6qlvCMEfmwqEYPqp11UbDbADvv4PMrS/view?usp=sharing'
+            },
+            // Puedes agregar más documentos siguiendo el mismo formato
+        ];
+
+        // Function to render the table
+        function renderTable(docs) {
+            const tbody = document.getElementById('documentsBody');
+            tbody.innerHTML = '';
+            
+            docs.forEach(doc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${doc.year}</td>
+                    <td>${doc.type}</td>
+                    <td>${doc.number}</td>
+                    <td>${doc.date}</td>
+                    <td>${doc.description}</td>
+                    <td>
+                        <button class="download-btn" onclick="downloadFile('${doc.driveLink}')">
+                            Descargar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredDocs = documents.filter(doc => 
+                doc.description.toLowerCase().includes(searchTerm) ||
+                doc.type.toLowerCase().includes(searchTerm) ||
+                doc.number.includes(searchTerm)
+            );
+            renderTable(filteredDocs);
+        });
+
+        // Sorting functionality
+        function sortTable(columnIndex) {
+            const properties = ['year', 'type', 'number', 'date', 'description'];
+            const property = properties[columnIndex];
+            
+            documents.sort((a, b) => {
+                if (a[property] < b[property]) return -1;
+                if (a[property] > b[property]) return 1;
+                return 0;
+            });
+            
+            renderTable(documents);
+        }
+
+        // Download function - Ahora abre el link de Google Drive
+        function downloadFile(driveLink) {
+            window.open(driveLink, '_blank');
+        }
+
+        // Initial render
+        renderTable(documents);
+    </script>
+</body>
+</html>
