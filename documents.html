@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOUC</title>
-   
+
+    <script>
+        // Verificar autenticaci√≥n al cargar la p√°gina
+        window.onload = function() {
+            if(!localStorage.getItem('isAuthenticated')) {
+                // Si no est√° autenticado, redirigir al login
+                window.location.href = 'index.html';
+            }
+        }
+
+        function logout() {
+            // Limpiar la autenticaci√≥n y redirigir al login
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'index.html';
+        }
+    </script>
+
     <style>
         :root {
             --primary-color: #0088cc;
@@ -120,7 +136,7 @@
         <div class="header">
             <h1>ORDEN DE CUERPO</h1>
         </div>
-
+        
         <div class="search-box">
             <input type="text" class="search-input" placeholder="Buscar documento..." id="searchInput">
         </div>
@@ -128,11 +144,11 @@
         <table id="documentsTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">AÒo</th>
+                    <th onclick="sortTable(0)">A√±o</th>
                     <th onclick="sortTable(1)">Tipo</th>
                     <th onclick="sortTable(2)">Nro</th>
                     <th onclick="sortTable(3)">Fecha</th>
-                    <th onclick="sortTable(4)">DescripciÛn</th>
+                    <th onclick="sortTable(4)">Descripci√≥n</th>
                     <th>Archivo</th>
                 </tr>
             </thead>
@@ -143,8 +159,16 @@
     </div>
 
     <script>
-        // Sample data structure - AquÌ es donde agregar·s tus documentos con los links de Google Drive
+        // Sample data structure - Aqu√≠ es donde agregar√°s tus documentos con los links de Google Drive
         let documents = [
+        {
+                year: '2024',
+                type: 'Orden de Cuerpo',
+                number: '202',
+                date: '24/10/2024',
+                description: 'Orden Nro. 201',
+                driveLink: 'https://drive.google.com/file/d/18NoFHz9RiBHLhZuL9_n4LqJDw9JLW2sB/view?usp=sharing'
+            },
             {
                 year: '2024',
                 type: 'Orden de Cuerpo',
@@ -161,14 +185,14 @@
                 description: 'Orden Nro. 200',
                 driveLink: 'https://drive.google.com/file/d/1c6qlvCMEfmwqEYPqp11UbDbADvv4PMrS/view?usp=sharing'
             },
-            // Puedes agregar m·s documentos siguiendo el mismo formato
+            // Puedes agregar m√°s documentos siguiendo el mismo formato
         ];
 
         // Function to render the table
         function renderTable(docs) {
             const tbody = document.getElementById('documentsBody');
             tbody.innerHTML = '';
-
+            
             docs.forEach(doc => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -202,13 +226,13 @@
         function sortTable(columnIndex) {
             const properties = ['year', 'type', 'number', 'date', 'description'];
             const property = properties[columnIndex];
-
+            
             documents.sort((a, b) => {
                 if (a[property] < b[property]) return -1;
                 if (a[property] > b[property]) return 1;
                 return 0;
             });
-
+            
             renderTable(documents);
         }
 
