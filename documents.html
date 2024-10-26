@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOUC</title>
 
-    
-
     <style>
         :root {
             --primary-color: #0088cc;
@@ -43,6 +41,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            text-align: center;
         }
 
         .search-box {
@@ -68,6 +68,7 @@
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
         }
 
         th {
@@ -94,12 +95,14 @@
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
         }
 
         .download-btn:hover {
             background-color: var(--hover-color);
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 margin: 0;
@@ -108,11 +111,55 @@
 
             th, td {
                 padding: 8px;
+                font-size: 12px;
             }
 
             .header {
                 flex-direction: column;
                 text-align: center;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            th {
+                display: none;
+            }
+
+            tr {
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 10px;
+            }
+
+            tr td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            tr td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                font-weight: bold;
+                text-align: left;
+                font-size: 14px;
+            }
+
+            .download-btn {
+                width: 100%;
             }
         }
     </style>
@@ -122,7 +169,7 @@
         <div class="header">
             <h1>ORDEN DE CUERPO</h1>
         </div>
-        
+
         <div class="search-box">
             <input type="text" class="search-input" placeholder="Buscar documento..." id="searchInput">
         </div>
@@ -145,17 +192,16 @@
     </div>
 
     <script>
-        // Sample data structure - Aquí es donde agregarás tus documentos con los links de Google Drive
         let documents = [
-        {
+            {
                 year: '2024',
                 type: 'Orden de Cuerpo',
                 number: '203',
                 date: '25/10/2024',
                 description: 'Orden Nro. 203',
                 driveLink: 'https://drive.google.com/file/d/1iKYl01Eru4vN9RdketRSoGaj0qJWWgTj/view?usp=sharing'
-            },    
-        {
+            },
+            {
                 year: '2024',
                 type: 'Orden de Cuerpo',
                 number: '202',
@@ -163,26 +209,9 @@
                 description: 'Orden Nro. 202',
                 driveLink: 'https://drive.google.com/file/d/18NoFHz9RiBHLhZuL9_n4LqJDw9JLW2sB/view?usp=sharing'
             },
-            {
-                year: '2024',
-                type: 'Orden de Cuerpo',
-                number: '201',
-                date: '23/10/2024',
-                description: 'Orden Nro. 201',
-                driveLink: 'https://drive.google.com/file/d/17uE7YUfPBZW1RMpsKsvvRKNWY_gU6QLW/view?usp=sharing'
-            },
-            {
-                year: '2024',
-                type: 'Orden de Cuerpo',
-                number: '200',
-                date: '22/10/2024',
-                description: 'Orden Nro. 200',
-                driveLink: 'https://drive.google.com/file/d/1c6qlvCMEfmwqEYPqp11UbDbADvv4PMrS/view?usp=sharing'
-            },
-            // Puedes agregar más documentos siguiendo el mismo formato
+            // Add more entries as needed
         ];
 
-        // Function to render the table
         function renderTable(docs) {
             const tbody = document.getElementById('documentsBody');
             tbody.innerHTML = '';
@@ -190,22 +219,19 @@
             docs.forEach(doc => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${doc.year}</td>
-                    <td>${doc.type}</td>
-                    <td>${doc.number}</td>
-                    <td>${doc.date}</td>
-                    <td>${doc.description}</td>
-                    <td>
-                        <button class="download-btn" onclick="downloadFile('${doc.driveLink}')">
-                            Descargar
-                        </button>
+                    <td data-label="Año">${doc.year}</td>
+                    <td data-label="Tipo">${doc.type}</td>
+                    <td data-label="Nro">${doc.number}</td>
+                    <td data-label="Fecha">${doc.date}</td>
+                    <td data-label="Descripción">${doc.description}</td>
+                    <td data-label="Archivo">
+                        <button class="download-btn" onclick="downloadFile('${doc.driveLink}')">Descargar</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        // Search functionality
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const filteredDocs = documents.filter(doc => 
@@ -216,7 +242,6 @@
             renderTable(filteredDocs);
         });
 
-        // Sorting functionality
         function sortTable(columnIndex) {
             const properties = ['year', 'type', 'number', 'date', 'description'];
             const property = properties[columnIndex];
@@ -230,12 +255,10 @@
             renderTable(documents);
         }
 
-        // Download function - Ahora abre el link de Google Drive
         function downloadFile(driveLink) {
             window.open(driveLink, '_blank');
         }
 
-        // Initial render
         renderTable(documents);
     </script>
 </body>
